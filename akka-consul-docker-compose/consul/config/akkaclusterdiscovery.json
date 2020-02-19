@@ -1,0 +1,19 @@
+{
+    "service": {
+        "name": "clustering-cluster",
+        "tags": [
+            "akka-management-port:8558",
+            "system:clustering-cluster"
+        ],
+        "port": 2552,
+        "address": "localhost",
+        "check": {
+            "id": "clustering-cluster",
+            "name": "clustering-cluster bootstrap on port 8558",
+            "http": "http://c1:8558/cluster/members/",
+            "method": "GET",
+            "interval": "10s",
+            "timeout": "1s"
+        }
+    }
+}

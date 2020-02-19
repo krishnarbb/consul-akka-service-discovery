@@ -1,0 +1,113 @@
+version: '2'
+services:
+  consul1:
+    image: consul
+    command: consul agent -server -client=0.0.0.0 -bootstrap-expect=3 -data-dir=/tmp/consul -config-dir=/consul/config -ui
+    hostname: consul1
+    ports:
+      - "8301:8300"
+      - "8401:8400"
+      - "8500:8500"
+      - "8600:8600"
+      - "9001:9001"
+    volumes:
+      - ./consul/config:/consul/config
+    networks:
+      default:
+        ipv4_address: 172.28.1.1
+
+  consul2:
+    image: consul
+    command: consul agent -server -client=0.0.0.0 -bootstrap-expect=3 -rejoin -retry-join=consul1 -data-dir=/tmp/consul -config-dir=/consul/config -ui
+    hostname: consul2
+    links:
+      - consul1
+    ports:
+      - "8302:8300"
+      - "8402:8400"
+      - "8502:8500"
+      - "8602:8600"
+      - "9002:9001"
+    volumes:
+      - ./consul/config:/consul/config
+    networks:
+      default:
+        ipv4_address: 172.28.1.2
+
+  consul3:
+    image: consul
+    command: consul agent -server -client=0.0.0.0 -bootstrap-expect=3 -rejoin -retry-join=consul1 -data-dir=/tmp/consul -config-dir=/consul/config -ui
+    hostname: consul3
+    links:
+      - consul1
+    ports:
+      - "8303:8300"
+      - "8403:8400"
+      - "8503:8500"
+      - "8603:8600"
+      - "9003:9001"
+    volumes:
+      - ./consul/config:/consul/config
+    networks:
+      default:
+        ipv4_address: 172.28.1.3
+
+  c1:
+    image: lightbend/akka-consul-docker-compose:latest
+    links:
+      - consul1
+      - c2
+      - c3
+    ports:
+      - '8558:8558'
+      - '8080:8080'
+    environment:
+      AKKA_REMOTING_PORT: 2552
+      AKKA_MGMT_BOOTSTRAP_PORT: 8558
+      SERVICE_PORT: 8080  
+      CLUSTER_IP: c1
+      CONSUL_PORT: 8500
+      CONSUL_IP: consul1
+    networks:
+      default:
+        ipv4_address: 172.28.1.4
+  c2:
+    image: lightbend/akka-consul-docker-compose:latest
+    links:
+      - consul1
+      - c3
+    ports:
+      - '8081:8080'
+    environment:
+      AKKA_REMOTING_PORT: 2552
+      AKKA_MGMT_BOOTSTRAP_PORT: 8558
+      SERVICE_PORT: 8080
+      CLUSTER_IP: c2
+      CONSUL_PORT: 8500
+      CONSUL_IP: consul1
+    networks:
+      default:
+        ipv4_address: 172.28.1.5
+  c3:
+    image: lightbend/akka-consul-docker-compose:latest
+    links:
+      - consul1
+    ports:
+      - '8082:8080'
+    environment:
+      AKKA_REMOTING_PORT: 2552
+      AKKA_MGMT_BOOTSTRAP_PORT: 8558
+      SERVICE_PORT: 8080
+      CLUSTER_IP: c3
+      CONSUL_PORT: 8500
+      CONSUL_IP: consul1
+    networks:
+      default:
+        ipv4_address: 172.28.1.6
+networks:
+  default:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+      - subnet:  172.28.0.0/16
