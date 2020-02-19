@@ -1,5 +1,6 @@
 # Consul based Service Discovery in an AKKA Cluster
-Consul based Service Discovery in an AKKA Cluster
+Consul based Service Discovery in an AKKA Cluster.
+
 Uses Docker and Docker compose to create an Akka Cluster and Consul Service registry.
 
 ### How to Run
