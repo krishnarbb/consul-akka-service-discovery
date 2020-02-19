@@ -7,7 +7,7 @@ Uses Docker and Docker compose to create an Akka Cluster and Consul Service regi
 Step 1:
 cd akka-consul-docker-compose
 
-To creates a local docker image, run `mvn package`
+To create a local docker image, run `mvn package`
 
 Step 2:
 
