@@ -13,6 +13,6 @@ Step 2:
 
 To run the cluster, run `docker-compose up`. This will create consul nodes and akka cluster nodes.
 
-While running, try opening a new terminal and (from the same directory) try things like `docker-compose down c1` and wat
-ch the cluster nodes respond.
-~
+While running, try opening a new terminal and (from the same directory) try things like `docker-compose down c1` and 
+watch the cluster nodes respond.
+
